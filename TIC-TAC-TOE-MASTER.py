@@ -8,8 +8,8 @@ pygame.init()
 WINSURF = pygame.display.set_mode((LENGTH,WIDTH))
 pygame.display.set_caption("Tic Tac Toe!")
 
-BFONT = pygame.font.Font("freesansbold.ttf", 24)
-MFONT = pygame.font.Font("freesansbold.ttf", 60) 
+BFONT = pygame.font.SysFont('Arial', 24)
+MFONT = pygame.font.SysFont('Arial', 60)
 
 width = 100
 length = 100
@@ -78,31 +78,16 @@ def checkwin(move):
     else:
         return False
 
+def top_flagger(text):
+    topSurf, topRect = makeTextObjs(text, BFONT, white)
+    topRect.center = (WIDTH/2, 50)
+    WINSURF.blit(topSurf, topRect)
 
-def win(win):
-    wintext = win + " Wins!"
-    winnerSurf, winnerRect = makeTextObjs(wintext, BFONT, white)
-    winnerRect.center = (WIDTH/2, 50)
-    WINSURF.blit(winnerSurf, winnerRect)
+def bot_flagger(text):
+    botSurf, botRect = makeTextObjs(text, BFONT, white)
+    botRect.center = (WIDTH/2, 530)
+    WINSURF.blit(botSurf, botRect)
 
-def print_move(p):
-    player = ["Player's", "Computer's"]
-    wintext = player[p] + " Turn!"
-    winnerSurf, winnerRect = makeTextObjs(wintext, BFONT, white)
-    winnerRect.center = (WIDTH/2, 530)
-    WINSURF.blit(winnerSurf, winnerRect)
-
-def confirm_rematch():
-    wintext = "Press 'R' for Rematch!"
-    winnerSurf, winnerRect = makeTextObjs(wintext, BFONT, white)
-    winnerRect.center = (WIDTH/2, 530)
-    WINSURF.blit(winnerSurf, winnerRect)
-
-def draw():
-    wintext = "It's a Draw!"
-    winnerSurf, winnerRect = makeTextObjs(wintext, BFONT, white)
-    winnerRect.center = (WIDTH/2, 50)
-    WINSURF.blit(winnerSurf, winnerRect)
     
 def AI(mov_e, mov_ai):
     legal = [1, 9, 3, 7, 5, 2, 4, 6, 8]
@@ -196,29 +181,29 @@ def main():
                         mov = 1
                         
             elif event.type == KEYUP:
-                if event.key == K_r:
+                if event.key == K_r and game_won:
                     mov1 = []
                     mov2 = []
                     game_won = False
                     mov = random.randint(0, 1)
                     
         if checkwin(mov1):
-            win("Player")
+            top_flagger("Player wins!")
             game_won = True
             
         elif checkwin(mov2):
-            win("Computer")
+            top_flagger("Computer wins!")
             game_won = True
             
         elif len(mov1) + len(mov2) == 9:
-            draw()
+            top_flagger("It's a DRAW!")
             game_won = True
 
 
         if game_won == False:
-            print_move(mov)
+            bot_flagger(["Player's move", "Computer's move"][mov])
         else:
-            confirm_rematch()
+            bot_flagger("Press 'R' for Rematch!")
             
         pygame.display.update()
         CLOCK.tick(FPS)
